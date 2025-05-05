@@ -1,4 +1,3 @@
-
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
 from aiogram.dispatcher.filters import Text
@@ -6,7 +5,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 import json
 import os
 
-# Путь к JSON-файлу с пользователями
+# Пути
 USER_DATA_PATH = "users.json"
 TEXTS_PATH = "content/money_selfworth_full_week"
 AUDIO_PATH = "content/money_selfworth_full_week"
@@ -22,7 +21,13 @@ def save_users(data):
     with open(USER_DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# Обработчик команды /start_zone1
+# Главное меню
+async def start(message: types.Message):
+    kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    kb.add(KeyboardButton("1-я зона: Деньги и самооценка"))
+    await message.answer("Выбери зону, с которой хочешь начать:", reply_markup=kb)
+
+# Запуск первой зоны по кнопке
 async def start_zone1(message: types.Message):
     users = load_users()
     user_id = str(message.from_user.id)
@@ -30,7 +35,7 @@ async def start_zone1(message: types.Message):
     save_users(users)
     await send_day_part(message, 1, "morning")
 
-# Отправка текста и аудио на текущий этап
+# Отправка текстов и аудио
 async def send_day_part(message, day, part):
     day_key = f"day{day}_{part}"
     text_file = os.path.join(TEXTS_PATH, f"{day_key}.txt")
@@ -50,12 +55,12 @@ async def send_day_part(message, day, part):
         kb = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton("Следующий день"))
         await message.answer("Молодец. Продолжим завтра.", reply_markup=kb)
 
-# Обработка вечернего вопроса
+# Обработка вечернего ответа
 async def handle_evening(message: types.Message):
     users = load_users()
     user_id = str(message.from_user.id)
     if user_id not in users:
-        await message.answer("Сначала начни зону командой /start_zone1")
+        await message.answer("Сначала выбери зону.")
         return
 
     users[user_id]["part"] = "evening"
@@ -63,12 +68,12 @@ async def handle_evening(message: types.Message):
     save_users(users)
     await send_day_part(message, day, "evening")
 
-# Обработка перехода к следующему дню
+# Переход на следующий день
 async def next_day(message: types.Message):
     users = load_users()
     user_id = str(message.from_user.id)
     if user_id not in users:
-        await message.answer("Сначала начни зону командой /start_zone1")
+        await message.answer("Сначала выбери зону.")
         return
 
     if users[user_id]["day"] >= 7:
@@ -81,6 +86,7 @@ async def next_day(message: types.Message):
     await send_day_part(message, users[user_id]["day"], "morning")
 
 def register_handlers_money(dp: Dispatcher):
-    dp.register_message_handler(start_zone1, commands=["start_zone1"])
+    dp.register_message_handler(start, commands=["start"])
+    dp.register_message_handler(start_zone1, Text(equals="1-я зона: Деньги и самооценка"))
     dp.register_message_handler(handle_evening, Text(equals="Ответить на вечерний вопрос"))
     dp.register_message_handler(next_day, Text(equals="Следующий день"))
