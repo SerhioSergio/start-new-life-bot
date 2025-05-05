@@ -21,13 +21,13 @@ def save_users(data):
     with open(USER_DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# Главное меню
+# Главное меню (запускается командой /start)
 async def start(message: types.Message):
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
-    kb.add(KeyboardButton("1-я зона: Деньги и самооценка"))
-    await message.answer("Выбери зону, с которой хочешь начать:", reply_markup=kb)
+    kb.add(KeyboardButton("▶️ Старт"))
+    await message.answer("Добро пожаловать в Start New Life. Готов начать путь трансформации?", reply_markup=kb)
 
-# Запуск первой зоны по кнопке
+# Запуск первой зоны по кнопке Старт
 async def start_zone1(message: types.Message):
     users = load_users()
     user_id = str(message.from_user.id)
@@ -50,17 +50,17 @@ async def send_day_part(message, day, part):
 
     if part == "morning":
         kb = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton("Ответить на вечерний вопрос"))
-        await message.answer("Вечером вернись, чтобы продолжить день.", reply_markup=kb)
+        await message.answer("Когда вернёшься вечером — нажми кнопку ниже и ответь. Это важно.", reply_markup=kb)
     else:
         kb = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton("Следующий день"))
-        await message.answer("Молодец. Продолжим завтра.", reply_markup=kb)
+        await message.answer("Хорошая работа. Завтра продолжим.", reply_markup=kb)
 
 # Обработка вечернего ответа
 async def handle_evening(message: types.Message):
     users = load_users()
     user_id = str(message.from_user.id)
     if user_id not in users:
-        await message.answer("Сначала выбери зону.")
+        await message.answer("Сначала нажми кнопку Старт.")
         return
 
     users[user_id]["part"] = "evening"
@@ -73,11 +73,11 @@ async def next_day(message: types.Message):
     users = load_users()
     user_id = str(message.from_user.id)
     if user_id not in users:
-        await message.answer("Сначала выбери зону.")
+        await message.answer("Сначала нажми кнопку Старт.")
         return
 
     if users[user_id]["day"] >= 7:
-        await message.answer("Ты прошёл всю зону «Деньги и самооценка».")
+        await message.answer("Ты прошёл всю зону «Деньги и самооценка». Отличная работа.")
         return
 
     users[user_id]["day"] += 1
@@ -85,8 +85,9 @@ async def next_day(message: types.Message):
     save_users(users)
     await send_day_part(message, users[user_id]["day"], "morning")
 
+# Регистрация
 def register_handlers_money(dp: Dispatcher):
     dp.register_message_handler(start, commands=["start"])
-    dp.register_message_handler(start_zone1, Text(equals="1-я зона: Деньги и самооценка"))
+    dp.register_message_handler(start_zone1, Text(equals="▶️ Старт"))
     dp.register_message_handler(handle_evening, Text(equals="Ответить на вечерний вопрос"))
     dp.register_message_handler(next_day, Text(equals="Следующий день"))
