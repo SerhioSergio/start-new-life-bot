@@ -10,5 +10,5 @@ print("Бот запущен")
 # from handlers import register_handlers
 # register_handlers(dp)
 
-if name == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
