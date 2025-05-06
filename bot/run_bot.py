@@ -1,42 +1,41 @@
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-import os
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    ApplicationBuilder,
+    CallbackQueryHandler,
+    CommandHandler,
+    ContextTypes,
+)
 
-def start(update: Update, context: CallbackContext):
-    main_menu_keyboard = [['Начать Зону 1 — Деньги и Самооценка']]
-    main_menu_markup = ReplyKeyboardMarkup(main_menu_keyboard, resize_keyboard=True)
-    update.message.reply_text(
-        "Добро пожаловать в Start a New Life!",
-        reply_markup=main_menu_markup
-    )
+from config import BOT_TOKEN
+from handlers.money_block import start_zone
+from handlers import (
+    zone_1, zone_2, zone_3, zone_4, zone_5, zone_6, zone_7
+)
 
-def handle_main_menu(update: Update, context: CallbackContext):
-    text = update.message.text
-    if text == 'Начать Зону 1 — Деньги и Самооценка':
-        update.message.reply_text(
-            "🚀 Отлично! Начинаем Зону 1 — *Деньги и Самооценка*.
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [InlineKeyboardButton("Зона 1: Деньги и самооценка", callback_data="zone_1")],
+        [InlineKeyboardButton("Зона 2: Энергия и восстановление", callback_data="zone_2")],
+        [InlineKeyboardButton("Зона 3: Отношения и границы", callback_data="zone_3")],
+        [InlineKeyboardButton("Зона 4: Цели и предназначение", callback_data="zone_4")],
+        [InlineKeyboardButton("Зона 5: Осознанность и тело", callback_data="zone_5")],
+        [InlineKeyboardButton("Зона 6: Перепрошивка и трансформация", callback_data="zone_6")],
+        [InlineKeyboardButton("Зона 7: Выход из выгорания", callback_data="zone_7")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Выбери зону, с которой хочешь начать:", reply_markup=reply_markup)
 
-"
-            "*День 1. Утро:*
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
 
-"
-            "_«Я достоин жить достойно. Деньги — это инструмент моей свободы, а не доказательство моей ценности.»_
+    zone_name = query.data
+    await start_zone(zone_name, query, context)
 
-"
-            "👉 Что ты выбираешь чувствовать, когда думаешь о деньгах?
+if name == "__main__":
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-"
-            "(Напиши прямо сюда — бот сохранит твой ответ и вечером продолжит работу.)",
-            parse_mode="Markdown"
-        )
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(button_handler))
 
-def run_bot():
-    TOKEN = os.getenv("TELEGRAM_TOKEN")
-    updater = Updater(token=TOKEN, use_context=True)
-    dispatcher = updater.dispatcher
-
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text('Начать Зону 1 — Деньги и Самооценка'), handle_main_menu))
-
-    updater.start_polling()
-    updater.idle()
+    app.run_polling()
