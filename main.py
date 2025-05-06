@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher, executor
 from config import BOT_TOKEN
-from handlers import register_handlers  # <- без отступов слева!
+from handlers.register_handlers import register_handlers
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
