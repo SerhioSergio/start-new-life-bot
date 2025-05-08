@@ -1,2 +1,2 @@
-BOT_TOKEN = "your-telegram-bot-token"
-OPENAI_API_KEY = "your-openai-api-key"
+BOT_TOKEN = "7214176594:AAEIaqT7EKptWeOxrS4L5DrVqnOKOJF0WfI"
+OPENAI_API_KEY = "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"
