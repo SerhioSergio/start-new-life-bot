@@ -7,7 +7,7 @@ dp = Dispatcher(bot)
 
 print("Бот запущен")
 
-if name == "__main__":
+if __name__ == "__main__":
     import asyncio
     from telegram.ext import ApplicationBuilder
 
