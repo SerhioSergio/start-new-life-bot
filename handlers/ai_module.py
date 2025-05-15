@@ -4,7 +4,7 @@ import os
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def get_ai_response(user_input, zone_name, step_name):
+def analyze_and_reply(user_input, zone_name, step_name):
     prompt = f"""
 Ты — продвинутый коуч, помогающий пользователю в {zone_name}, шаг: {step_name}.
 Пользователь написал: "{user_input}"
