@@ -9,5 +9,11 @@ print("Бот запущен")
 
 register_handlers(dp)
 
-if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+if name == '__main__':
+    import asyncio
+    from handlers import register_handlers  # замени на свой модуль
+    from telegram.ext import ApplicationBuilder
+
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    register_handlers(app)
+    app.run_polling()  # именно polling, не webhook!
