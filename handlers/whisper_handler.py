@@ -1,13 +1,10 @@
+import whisper
 
-import openai
-import os
+model = whisper.load_model("base")  # Можно "small", "medium", "large" — base быстрее
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-async def transcribe_voice(file_path):
+def transcribe_voice(file_path):
     try:
-        with open(file_path, "rb") as audio_file:
-            transcript = openai.Audio.transcribe("whisper-1", audio_file)
-        return transcript["text"]
+        result = model.transcribe(file_path)
+        return result["text"]
     except Exception as e:
-        return f"[Ошибка расшифровки голоса: {e}]"
+        return f"[Ошибка расшифровки: {e}]"
