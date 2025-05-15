@@ -7,8 +7,6 @@ dp = Dispatcher(bot)
 
 print("Бот запущен")
 
-register_handlers(dp)
-
 if __name__ == "__main__":
     import asyncio
     from handlers import register_handlers  # замени на свой модуль
