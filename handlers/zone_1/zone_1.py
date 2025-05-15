@@ -1,7 +1,7 @@
 # Logic for zone_1
 from aiogram.types import Message
 from handlers.user_progress import save_user_step
-from ai_module import analyze_and_reply
+from handlers.ai_module import analyze_and_reply
 
 ZONE_NAME = "Зона 1: Деньги и самооценка"
 STEPS = [
