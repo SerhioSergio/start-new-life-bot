@@ -13,5 +13,5 @@ if __name__ == "__main__":
     from telegram.ext import ApplicationBuilder
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
-    register_handlers(app)
+   register_handlers.register_handlers(app)
     app.run_polling()  # именно polling, не webhook!
