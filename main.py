@@ -9,7 +9,7 @@ print("Бот запущен")
 
 register_handlers(dp)
 
-if name == '__main__':
+if __name__ == "__main__":
     import asyncio
     from handlers import register_handlers  # замени на свой модуль
     from telegram.ext import ApplicationBuilder
