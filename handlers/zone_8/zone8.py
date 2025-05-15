@@ -13,7 +13,12 @@ STEPS = [
     "День_7_утро", "День_7_вечер"
 ]
 
+from handlers.user_progress import save_user_step
+
 async def start_day_for_zone8(message: Message, context):
+    user_id = message.from_user.id
+    await save_user_step(user_id, "zone_8", "День_1_утро")
+
     await message.answer(f"Ты начал работу с {ZONE_NAME}.")
     await message.answer("День 1 — Утро. Готов разрушать страхи?")
 
