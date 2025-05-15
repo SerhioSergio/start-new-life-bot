@@ -9,7 +9,7 @@ from telegram.ext import (
 from config import BOT_TOKEN
 from handlers.money_block import start_zone
 from handlers import (
-    zone_1, zone_2, zone_3, zone_4, zone_5, zone_6, zone_7
+    zone_1, zone_2, zone_3, zone_4, zone_5, zone_6, zone_7, zone_8
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -21,6 +21,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("Зона 5: Осознанность и тело", callback_data="zone_5")],
         [InlineKeyboardButton("Зона 6: Перепрошивка и трансформация", callback_data="zone_6")],
         [InlineKeyboardButton("Зона 7: Выход из выгорания", callback_data="zone_7")],
+        [InlineKeyboardButton("Зона 8: Разрыв с тенью. Перерождение", callback_data="zone_8")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Выбери зону, с которой хочешь начать:", reply_markup=reply_markup)
@@ -28,9 +29,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-
     zone_name = query.data
-    await start_zone(zone_name, query, context)
+
+    zone_map = {
+        "zone_1": (zone_1, 1),
+        "zone_2": (zone_2, 2),
+        "zone_3": (zone_3, 3),
+        "zone_4": (zone_4, 4),
+        "zone_5": (zone_5, 5),
+        "zone_6": (zone_6, 6),
+        "zone_7": (zone_7, 7),
+        "zone_8": (zone_8, 8),
+    }
+
+    if zone_name in zone_map:
+        module, number = zone_map[zone_name]
+        await start_zone(update, context, module, number)
 
 if name == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
