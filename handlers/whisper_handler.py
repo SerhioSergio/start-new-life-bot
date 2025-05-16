@@ -5,7 +5,7 @@ from aiogram.types import Message
 from aiogram.dispatcher import Dispatcher
 
 # Загружаем модель
-model = whisper.load_model("small")  # можно заменить на "base", "medium", "large"
+model = whisper.load_model("small")  # Можно заменить на "base", "medium", "large"
 
 # Распознавание
 async def transcribe_voice(voice_bytes: bytes, extension: str = ".ogg") -> str:
@@ -40,7 +40,10 @@ async def handle_voice(message: Message):
     await message.answer("Распознаю голос...")
 
     text = await transcribe_voice(file_bytes)
+
+    # Отправка результата
     await message.answer(f"Распознано: {text}")
+    await message.answer("Готово")
 
 # Регистрация обработчика
 def register_voice_handler(dp: Dispatcher):
