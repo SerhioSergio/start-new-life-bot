@@ -1,27 +1,20 @@
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.dispatcher import Dispatcher
 
-from handlers.zone_1.start import register_zone_1_handlers
-from handlers.zone_2.start import register_zone_2_handlers
-from handlers.zone_3.start import register_zone_3_handlers
-from handlers.zone_4.start import register_zone_4_handlers
-from handlers.zone_5.start import register_zone_5_handlers
-from handlers.zone_6.start import register_zone_6_handlers
-from handlers.zone_7.start import register_zone_7_handlers
+# Простой стартовый обработчик
+async def handle_money_block_start(message: Message):
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(KeyboardButton("Зона 1"), KeyboardButton("Зона 2"))
+    keyboard.add(KeyboardButton("Зона 3"), KeyboardButton("Зона 4"))
+    keyboard.add(KeyboardButton("Зона 5"), KeyboardButton("Зона 6"))
+    keyboard.add(KeyboardButton("Зона 7"), KeyboardButton("Зона 8"))
 
+    await message.answer(
+        "Добро пожаловать в программу 'Start a New Life'.\n\n"
+        "С какой зоны ты хочешь начать?",
+        reply_markup=keyboard
+    )
 
-async def start_block_command(message: Message):
-    await message.answer("Добро пожаловать! Напиши, какую зону хочешь начать: Зона 1 … Зона 7")
-
-
+# Регистрация обработчика
 def register_money_block_handlers(dp: Dispatcher):
-    dp.register_message_handler(start_block_command, commands=["start"])
-
-    # Регистрируем все 7 зон
-    register_zone_1_handlers(dp)
-    register_zone_2_handlers(dp)
-    register_zone_3_handlers(dp)
-    register_zone_4_handlers(dp)
-    register_zone_5_handlers(dp)
-    register_zone_6_handlers(dp)
-    register_zone_7_handlers(dp)
+    dp.register_message_handler(handle_money_block_start, commands=["start"])
