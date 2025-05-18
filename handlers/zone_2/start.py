@@ -1,23 +1,19 @@
-
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.dispatcher import Dispatcher
 from handlers.user_progress import get_user_step, save_user_step
 
-ZONE_NAME = "Зона 2: Самооценка и уверенность"
+ZONE_NAME = "Зона 2"
 
 steps = [
-    "день_1_утро", "день_1_вечер",
-    "день_2_утро", "день_2_вечер",
-    "день_3_утро", "день_3_вечер",
-    "день_4_утро", "день_4_вечер",
-    "день_5_утро", "день_5_вечер",
-    "день_6_утро", "день_6_вечер",
-    "день_7_утро", "день_7_вечер"
+    "Утро 1", "Вечер 1",
+    "Утро 2", "Вечер 2",
+    "Утро 3", "Вечер 3",
+    "Утро 4", "Вечер 4",
+    "Утро 5", "Вечер 5",
+    "Утро 6", "Вечер 6",
+    "Утро 7", "Вечер 7"
 ]
-
-messages = {
-    step: f"Это {step.replace('_', ' ')} в {ZONE_NAME}." for step in steps
-}
+steps = [f"{step} ({ZONE_NAME})" for step in steps]
 
 def get_step_keyboard():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -26,32 +22,22 @@ def get_step_keyboard():
     keyboard.add(KeyboardButton("Выйти"))
     return keyboard
 
-async def process_zone(message: Message):
+async def process_zone_2(message: Message):
     user_id = message.from_user.id
-    step = get_user_step(user_id, "zone_2")
-    if step is None:
-        step = 0
-    await message.answer(messages[steps[step]], reply_markup=get_step_keyboard())
-    save_user_step(user_id, "zone_2", step)
+    step = get_user_step(user_id, "zone_2") or 0
 
-async def handle_buttons(message: Message):
-    user_id = message.from_user.id
-    step = get_user_step(user_id, "zone_2")
-    if step is None:
-        step = 0
+    if message.text.lower() in ["продолжить", "назад", "выйти"] and step > 0:
+        if message.text.lower() == "продолжить" and step < len(steps) - 1:
+            step += 1
+        elif message.text.lower() == "назад" and step > 0:
+            step -= 1
+        elif message.text.lower() == "выйти":
+            await message.answer("Ты вышел из зоны. Возвращайся, когда будешь готов.")
+            return
+        save_user_step(user_id, "zone_2", step)
 
-    if message.text == "Продолжить" and step < len(steps) - 1:
-        step += 1
-    elif message.text == "Назад" and step > 0:
-        step -= 1
-    elif message.text == "Выйти":
-        await message.answer("Вы вышли в главное меню.", reply_markup=None)
-        save_user_step(user_id, "zone_2", 0)
-        return
-
-    await message.answer(messages[steps[step]], reply_markup=get_step_keyboard())
+    await message.answer(steps[step], reply_markup=get_step_keyboard())
     save_user_step(user_id, "zone_2", step)
 
 def register_zone_2_handlers(dp: Dispatcher):
-    dp.register_message_handler(process_zone, lambda msg: msg.text.lower() == "зона 2")
-    dp.register_message_handler(handle_buttons, lambda msg: msg.text in ["Продолжить", "Назад", "Выйти"])
+    dp.register_message_handler(process_zone_2, lambda msg: msg.text.lower() in ["продолжить", "назад", "выйти"])
