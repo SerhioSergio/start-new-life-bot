@@ -1,6 +1,5 @@
 aiogram==2.25.1
 openai==1.14.2
-openai-whisper==20230314
 pydub==0.25.1
 pillow==10.2.0
 python-dotenv==1.0.1
