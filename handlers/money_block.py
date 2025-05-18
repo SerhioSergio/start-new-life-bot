@@ -1,19 +1,25 @@
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.dispatcher import Dispatcher
 
-from handlers.zone_1.start import register_zone_1_handlers, process_zone_1
-from handlers.zone_2.start import register_zone_2_handlers, process_zone_2
-from handlers.zone_3.start import register_zone_3_handlers, process_zone_3
-from handlers.zone_4.start import register_zone_4_handlers, process_zone_4
-from handlers.zone_5.start import register_zone_5_handlers, process_zone_5
-from handlers.zone_6.start import register_zone_6_handlers, process_zone_6
-from handlers.zone_7.start import register_zone_7_handlers, process_zone_7
-from handlers.zone_8.start import register_zone_8_handlers, process_zone_8
+from handlers.zone_1.start import process_zone_1
+from handlers.zone_2.start import process_zone_2
+from handlers.zone_3.start import process_zone_3
+from handlers.zone_4.start import process_zone_4
+from handlers.zone_5.start import process_zone_5
+from handlers.zone_6.start import process_zone_6
+from handlers.zone_7.start import process_zone_7
+from handlers.zone_8.start import process_zone_8
 
 async def handle_money_block_start(message: Message):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    for i in range(1, 9):
-        keyboard.add(KeyboardButton(f"Зона {i}"))
+    keyboard.add(KeyboardButton("Зона 1"))
+    keyboard.add(KeyboardButton("Зона 2"))
+    keyboard.add(KeyboardButton("Зона 3"))
+    keyboard.add(KeyboardButton("Зона 4"))
+    keyboard.add(KeyboardButton("Зона 5"))
+    keyboard.add(KeyboardButton("Зона 6"))
+    keyboard.add(KeyboardButton("Зона 7"))
+    keyboard.add(KeyboardButton("Зона 8"))
 
     await message.answer(
         "Добро пожаловать в программу 'Start a New Life'\n\nС какой зоны ты хочешь начать?",
@@ -23,7 +29,7 @@ async def handle_money_block_start(message: Message):
 async def handle_zone_selection(message: Message):
     text = message.text.strip().lower()
     if text == "зона 1":
-        await process_zone(message)
+        await process_zone_1(message)
     elif text == "зона 2":
         await process_zone_2(message)
     elif text == "зона 3":
@@ -39,7 +45,7 @@ async def handle_zone_selection(message: Message):
     elif text == "зона 8":
         await process_zone_8(message)
     else:
-        await message.answer("Такой зоны нет. Попробуй снова.")
+        await message.answer("Кажется, ты выбрал зону неправильно. Попробуй снова.")
 
 def register_money_block_handlers(dp: Dispatcher):
     dp.register_message_handler(handle_money_block_start, commands=["start"])
