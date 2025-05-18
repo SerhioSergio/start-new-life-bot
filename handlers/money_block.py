@@ -1,7 +1,7 @@
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.dispatcher import Dispatcher
 
-from handlers.zone_1.start import register_zone_1_handlers, process_zone
+from handlers.zone_1.start import register_zone_1_handlers, process_zone_1
 from handlers.zone_2.start import register_zone_2_handlers, process_zone_2
 from handlers.zone_3.start import register_zone_3_handlers, process_zone_3
 from handlers.zone_4.start import register_zone_4_handlers, process_zone_4
