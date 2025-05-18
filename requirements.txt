@@ -1,8 +1,7 @@
 aiogram==2.25.1
-python-dotenv==1.0.1
-openai==1.14.3
-requests==2.31.0
+openai==1.14.2
+openai-whisper==20230314
 pydub==0.25.1
-pydantic==1.10.12
-Pillow==10.2.0
-whisper @ git+https://github.com/openai/whisper.git
+pillow==10.2.0
+python-dotenv==1.0.1
+git+https://github.com/openai/whisper.git
