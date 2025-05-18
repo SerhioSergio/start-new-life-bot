@@ -45,3 +45,5 @@ async def process_zone_1(message: Message):
 
 def register_zone_1_handlers(dp: Dispatcher):
     dp.register_message_handler(process_zone_1, lambda msg: msg.text.lower() in ["продолжить", "назад", "выйти"])
+async def process_zone_1_process(message: Message):
+    await process_zone(message)
