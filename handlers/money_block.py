@@ -1,56 +1,46 @@
-from aiogram import types, Dispatcher
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from handlers.zone_1.zone_1 import start_day_for_zone1
-from handlers.zone_2.zone_2 import start_day_for_zone2
-from handlers.zone_3.zone_3 import start_day_for_zone3
-from handlers.zone_4.zone_4 import start_day_for_zone4
-from handlers.zone_5.zone_5 import start_day_for_zone5
-from handlers.zone_6.zone_6 import start_day_for_zone6
-from handlers.zone_7.zone_7 import start_day_for_zone7
-from handlers.zone_8.zone_8 import start_day_for_zone8
+from aiogram.types import Message
+from handlers.user_progress import save_user_step
+from handlers.a_module import analyze_and_reply
 
-# Кнопки для выбора зоны
-keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-keyboard.add(
-    KeyboardButton("Зона 1"), KeyboardButton("Зона 2"),
-    KeyboardButton("Зона 3"), KeyboardButton("Зона 4"),
-    KeyboardButton("Зона 5"), KeyboardButton("Зона 6"),
-    KeyboardButton("Зона 7"), KeyboardButton("Зона 8")
-)
+ZONE_NAME = "Зона 8 — Разрыв с тенью. Перерождение"
+STEPS = [
+    "День 1_утро", "День 1_вечер",
+    "День 2_утро", "День 2_вечер",
+    "День 3_утро", "День 3_вечер",
+    "День 4_утро", "День 4_вечер",
+    "День 5_утро", "День 5_вечер",
+    "День 6_утро", "День 6_вечер",
+    "День 7_утро", "День 7_вечер"
+]
 
-# Обработка команды /start
-async def start_command(message: types.Message):
+async def start_day_for_zone8(message: Message, context: dict):
+    user_id = message.from_user.id
+    step = STEPS[0]
+    await save_user_step(user_id, step)
     await message.answer(
-        "Привет! Это бот *Start New Life*.\n\n"
-        "Здесь начинается твоя трансформация.\n"
-        "Выбери зону, с которой хочешь начать:",
-        reply_markup=keyboard
+        f"Ты начал *{ZONE_NAME}*.\n\n"
+        "День 1 — Утро.\n"
+        "Здесь ты встретишься со своей внутренней слабостью лицом к лицу.\n\n"
+        "Напиши «Продолжить», если готов прорваться."
     )
 
-# Обработка кнопок выбора зоны
-async def handle_zone_selection(message: types.Message):
-    text = message.text.lower()
+async def send_morning_prompt(context, user_id, day):
+    text = (
+        f"*{ZONE_NAME}* — День {day} Утро\n\n"
+        "Кто внутри тебя постоянно тормозит твои решения?\n"
+        "Что за голос мешает тебе взять масштаб?"
+    )
+    await context.bot.send_message(chat_id=user_id, text=text, parse_mode="Markdown")
 
-    if text == "зона 1":
-        await start_day_for_zone1(message, context={})
-    elif text == "зона 2":
-        await start_day_for_zone2(message, context={})
-    elif text == "зона 3":
-        await start_day_for_zone3(message, context={})
-    elif text == "зона 4":
-        await start_day_for_zone4(message, context={})
-    elif text == "зона 5":
-        await start_day_for_zone5(message, context={})
-    elif text == "зона 6":
-        await start_day_for_zone6(message, context={})
-    elif text == "зона 7":
-        await start_day_for_zone7(message, context={})
-    elif text == "зона 8":
-        await start_day_for_zone8(message, context={})
-    else:
-        await message.answer("Пожалуйста, выбери одну из доступных зон.")
+async def send_evening_prompt(context, user_id, day):
+    text = (
+        f"*{ZONE_NAME}* — День {day} Вечер\n\n"
+        "Удалось ли тебе вырваться из петли страха?\n"
+        "Что ты сделал по-мужски сегодня?"
+    )
+    await context.bot.send_message(chat_id=user_id, text=text, parse_mode="Markdown")
 
-# Регистрация хендлеров
-def register_money_block_handlers(dp: Dispatcher):
-    dp.register_message_handler(start_command, commands=["start"])
-    dp.register_message_handler(handle_zone_selection)
+async def analyze_user_reply(message: Message):
+    user_text = message.text
+    feedback = await analyze_and_reply(user_text, zone="zone_8")
+    await message.answer(feedback)
