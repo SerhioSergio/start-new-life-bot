@@ -5,11 +5,9 @@ from handlers.register_handlers import register_handlers
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
-print("Инициализация бота...")
-
+print("Запуск бота...")
 register_handlers(dp)
+print("Хендлеры подключены, начинаем polling...")
 
-print("Хендлеры зарегистрированы")
-print("Запуск polling...")
-
-executor.start_polling(dp, skip_updates=True)
+if name == "__main__":
+    executor.start_polling(dp, skip_updates=True)
