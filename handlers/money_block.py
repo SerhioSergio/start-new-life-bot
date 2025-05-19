@@ -1,50 +1,56 @@
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
-from aiogram.dispatcher import Dispatcher
+from aiogram import types, Dispatcher
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from handlers.zone_1.zone_1 import start_day_for_zone1
+from handlers.zone_2.zone_2 import start_day_for_zone2
+from handlers.zone_3.zone_3 import start_day_for_zone3
+from handlers.zone_4.zone_4 import start_day_for_zone4
+from handlers.zone_5.zone_5 import start_day_for_zone5
+from handlers.zone_6.zone_6 import start_day_for_zone6
+from handlers.zone_7.zone_7 import start_day_for_zone7
+from handlers.zone_8.zone_8 import start_day_for_zone8
 
-# Импорты всех зон
-from handlers.zone_1.start import process_zone_1_process
-from handlers.zone_2.start import process_zone_2_process
-from handlers.zone_3.start import process_zone_3_process
-from handlers.zone_4.start import process_zone_4_process
-from handlers.zone_5.start import process_zone_5_process
-from handlers.zone_6.start import process_zone_6_process
-from handlers.zone_7.start import process_zone_7_process
-from handlers.zone_8.start import process_zone_8_process
+# Кнопки для выбора зоны
+keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+keyboard.add(
+    KeyboardButton("Зона 1"), KeyboardButton("Зона 2"),
+    KeyboardButton("Зона 3"), KeyboardButton("Зона 4"),
+    KeyboardButton("Зона 5"), KeyboardButton("Зона 6"),
+    KeyboardButton("Зона 7"), KeyboardButton("Зона 8")
+)
 
-# Команда /start
-async def handle_money_block_start(message: Message):
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    for i in range(1, 9):
-        keyboard.add(KeyboardButton(f"Зона {i}"))
-
+# Обработка команды /start
+async def start_command(message: types.Message):
     await message.answer(
-        "Добро пожаловать в трансформационную программу *Start a New Life*!\n\n"
-        "Выбери, с какой зоны ты хочешь начать:",
-        reply_markup=keyboard,
-        parse_mode="Markdown"
+        "Привет! Это бот *Start New Life*.\n\n"
+        "Здесь начинается твоя трансформация.\n"
+        "Выбери зону, с которой хочешь начать:",
+        reply_markup=keyboard
     )
 
-# Выбор зоны
-async def handle_zone_selection(message: Message):
-    text = message.text.strip().lower()
+# Обработка кнопок выбора зоны
+async def handle_zone_selection(message: types.Message):
+    text = message.text.lower()
 
-    zone_map = {
-        "зона 1": process_zone_1_process,
-        "зона 2": process_zone_2_process,
-        "зона 3": process_zone_3_process,
-        "зона 4": process_zone_4_process,
-        "зона 5": process_zone_5_process,
-        "зона 6": process_zone_6_process,
-        "зона 7": process_zone_7_process,
-        "зона 8": process_zone_8_process,
-    }
-
-    if text in zone_map:
-        await zone_map[text](message)
+    if text == "зона 1":
+        await start_day_for_zone1(message, context={})
+    elif text == "зона 2":
+        await start_day_for_zone2(message, context={})
+    elif text == "зона 3":
+        await start_day_for_zone3(message, context={})
+    elif text == "зона 4":
+        await start_day_for_zone4(message, context={})
+    elif text == "зона 5":
+        await start_day_for_zone5(message, context={})
+    elif text == "зона 6":
+        await start_day_for_zone6(message, context={})
+    elif text == "зона 7":
+        await start_day_for_zone7(message, context={})
+    elif text == "зона 8":
+        await start_day_for_zone8(message, context={})
     else:
-        await message.answer("Кажется, ты выбрал зону неправильно. Попробуй ещё раз.")
+        await message.answer("Пожалуйста, выбери одну из доступных зон.")
 
 # Регистрация хендлеров
 def register_money_block_handlers(dp: Dispatcher):
-    dp.register_message_handler(handle_money_block_start, commands=["start"])
-    dp.register_message_handler(handle_zone_selection, lambda msg: msg.text.lower().startswith("зона"))
+    dp.register_message_handler(start_command, commands=["start"])
+    dp.register_message_handler(handle_zone_selection)
