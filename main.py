@@ -1,8 +1,11 @@
-from aiogram import Bot, Dispatcher, executor
+from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
 from handlers.register_handlers import register_handlers
 
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 print("DEBUG: Текущая директория =", os.getcwd())
 print("DEBUG: Содержимое =", os.listdir())
 
