@@ -1,6 +1,6 @@
 from aiogram.types import Message
 from handlers.user_progress import save_user_step
-from handlers.a_module import analyze_and_reply
+from handlers.analysis import analyze_and_reply
 
 ZONE_NAME = "Зона 8 — Разрыв с тенью. Перерождение"
 STEPS = [
